@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import school_info as inf
 import csv
 
-#====================ВІДОБРАЖЕННЯ ОСНОВНОЇ ІНФОРМАЦІЇ ПРО ШКОЛУ====================
+#====================СЦЕНАРІЙ 1.ВІДОБРАЖЕННЯ ОСНОВНОЇ ІНФОРМАЦІЇ ПРО ШКОЛУ====================
 #створюємо головний заголовок сторінки з сірою лінією-розділювачем
 st.header("Статистична інформація школи", text_alignment = "center", divider = "gray") 
 
@@ -42,16 +42,16 @@ def grafics(school):
     vertical_data = {}
     
     for school_class in school.get_classes: #перебираємо всі класи в школі
-        parallel = school_class.paralel #отримуємо номер паралелі поточного класу
-        vertical = school_class.vertical
+        parallel = school_class.paralel 
+        vertical = school_class.vertical 
 
-        if parallel not in parallel_data: #якщо паралелі ще немає в словнику, визначаємо її з нульовим значенням
-            parallel_data[parallel] = 0 #створюємо ключ для поточної паралелі зі значенням 0
+        if parallel not in parallel_data: #якщо паралелі ще немає в словнику, створюємо ключ для паралелі зі значенням 0
+            parallel_data[parallel] = 0 
         parallel_data[parallel] += school_class.student_count() #додаємо кількість учнів поточного класу до загальної суми цієї паралелі
 
-        if vertical not in vertical_data: #якщо вертикалі ще немає в словнику, визначаємо її з нульовим значенням
-            vertical_data[vertical] = []  #створюємо ключ для поточної вертикалі з порожнім списком
-            vertical_data[vertical].append(school_class.student_count())  #додаємо кількість учнів поточного класу до списку відповідної вертикалі
+        if vertical not in vertical_data: #якщо вертикалі ще немає в словнику, створюємо ключ для поточної вертикалі з порожнім списком
+            vertical_data[vertical] = []  
+        vertical_data[vertical].append(school_class.student_count())  #додаємо кількість учнів поточного класу до списку відповідної вертикалі
         
     fig, ax = plt.subplots() #створюємо фігуру та осі для графіка
     ax.set_facecolor('lightblue') #встановлюємо світло-блакитний фоновий колір
@@ -64,19 +64,23 @@ def grafics(school):
     ax.set_ylabel("Кількість учнів", c="#1d3557")  #підпис вертикальної осі
     
     st.pyplot(fig) #виводимо графік
-    plt.close(fig) #закриваємо фігуру для звільнення оперативної пам'яті
+    plt.close(fig) #закриваємо фігуру 
+
+    st.divider()
 
     #створюємо порожній словник для зберігання середньої кількості учнів по кожній вертикалі
     average_vertical = {}
 
-    for vertical, counts in vertical_data.items(): #перебираємо елементи словника, отримуючи назву вертикалі та список кількості учнів у її класах
+    #Обчислення середньої кількості учнів у кожній вертикалі
+    for vertical, counts in vertical_data.items(): 
         average_vertical[vertical] = sum(counts) / len(counts)
 
+    #cтворюємо стовпчикову діаграму у якій вісь х - літера класу, вісь у - середня кількість учнів на вертикаль
     fig, ax = plt.subplots()
     ax.set_facecolor('lightblue')
     ax.patch.set_alpha(0.2)
     ax.bar(list(vertical_data.keys()), list(average_vertical.values()), facecolor = "#457b9d", alpha = 0.8)
-    plt.xticks(list(vertical_data.keys()))
+    plt.xticks(list(vertical_data.keys())) 
     ax.set_xlabel("Вертикаль", c = "#1d3557")
     ax.set_ylabel("Середня кількість учнів", c = "#1d3557")
     ax.set_title("Розподіл середньої кількості учнів по вертикалях", c = "#1d3557")
@@ -84,49 +88,57 @@ def grafics(school):
     st.pyplot(fig)
     plt.close(fig)
 
-#=========================Лінійні графіки==============
-    birth_data = {}
+    st.divider()
 
-    for school_class in school.get_classes:
-        for student in school_class.get_students:
-            year = student.get_birth_year
+#=========================Лінійні графіки==============
+
+    birth_data = {}  #створюємо словник для зберігання кількості учнів за роками народження
+
+    for school_class in school.get_classes: #перебираємо всі класи школи
+        for student in school_class.get_students: #перебираємо всіх учнів поточного класу
+            year = student.get_birth_year #отримуємо рік народження поточного учня
 
             if year in birth_data:
-                birth_data[year] += 1 
+                birth_data[year] += 1 #якщо рік народження вже є у словнику, збільшуємо кількість учнів цього року на 1
             else:
-                birth_data[year] = 1
+                birth_data[year] = 1 #якщо року ще немає у словнику, створюємо новий ключ зі значенням 1
 
-    # if birth_data:
-    years = sorted(birth_data.keys())
-    counts = [birth_data[year] for year in years]
+    
+    years = sorted(birth_data.keys())  #отримуємо відсортований список років народження учнів
+    counts = [birth_data[year] for year in years] #створюємо список кількості учнів для кожного року народження
 
+    #побудова лінійного графіку, у якому х - рік народження, у - кількість учнів, які народилися цього року 
     fig, ax = plt.subplots()
     ax.set_facecolor('lightblue')
-    ax.patch.set_alpha(0.2)
+    ax.patch.set_alpha(0.2) #встановлюємо прозорість фону
     ax.plot(years, counts, c = "#1d3557", marker="o")
     ax.set_xlabel("Рік народження", c = "#1d3557")
     ax.set_ylabel("Кількість учнів", c = "#1d3557")
     ax.set_title("Кількість учнів за роком народження", c = "#1d3557")
 
-    plt.xticks(years)
+    plt.xticks(years)  #встановлюємо позначки на осі х, гарантуючі, що будуть відображені всі роки народження зі списку years
     st.pyplot(fig)
     plt.close(fig)
 
+    st.divider()
 
+    #сортуємо класи спочатку за паралеллю, а потім за вертикаллю
     sorted_classes = sorted(school.get_classes, key=lambda cl: (cl.paralel, cl.vertical))
 
-    classes = []
+    classes = [] 
     avg_grades = []
-    for school_class in sorted_classes:
-        cl_grades = []
-        cl_name = school_class.class_name()
-        for student in school_class.get_students:
-            cl_grades.append(student.get_average_grade)
-        avrg_grade_per_class = sum(cl_grades)/len(cl_grades)
-        avg_grades.append(avrg_grade_per_class)
-        classes.append(cl_name)
 
-    # if classes:
+    #Обчислення середньої оцінки учнів кожного класу
+    for school_class in sorted_classes:
+        cl_grades = [] #створюємо порожній список для зберігання середніх оцінок учнів поточного класу
+        cl_name = school_class.class_name()
+        for student in school_class.get_students: #перебираємо всіх учнів поточного класу
+            cl_grades.append(student.get_average_grade) #додаємо середню оцінку поточного учня до списку оцінок класу
+        avrg_grade_per_class = sum(cl_grades)/len(cl_grades) #обчислюємо середнє арифметичне середныъ оцінок усіх учнів поточного класу
+        avg_grades.append(avrg_grade_per_class) #додаємо обчислену середню оцінку класу до загального списку середніх оцінок класу
+        classes.append(cl_name) #додаємо назву поточного класу до списку назв класів
+
+    #будуємо точкову діаграму, в якій x - назви класів, у - середня оцінка учнів у класі
     fig, ax = plt.subplots() 
     ax.set_facecolor('lightblue')
     ax.patch.set_alpha(0.2)
@@ -135,15 +147,14 @@ def grafics(school):
     ax.set_ylabel("Середня оцінка учня")
     ax.set_title("Залежність середньої оцінки від класів")
 
-         # Повертаємо підписи на 60 градусів, щоб вони не накладалися
+    #Повертаємо підписи на 60 градусів, щоб класи на накладались один на один
     plt.xticks(rotation=60, ha="right")
 
     fig.tight_layout()
     st.pyplot(fig)
     plt.close(fig)
                        
-grafics(inf.load_school())
-
+grafics(inf.load_school()) #викликаємо функцію grafics, передаючи їй об'єкт школи з модуля info
 
 #=============ПЕРЕВЕДЕННЯ КЛАСІВ=================
 if st.button("Перевести всі класи на наступний рік"):
@@ -154,38 +165,48 @@ if st.button("Перевести всі класи на наступний рі�
 
 #Виведення статистики оновлених класів
 if "updated_school" in st.session_state:
-    st.header("Класи після переведення", text_alignment="center", divider="gray")
-
+    st.header("Класи після переведення", text_alignment="center", divider = "grey")
+    st.write("\n")
     updated_school = st.session_state.updated_school
 
-    #Виведення оновленого списку класів
-    for school_class in sorted(updated_school.get_classes, key=lambda cl: (cl.paralel, cl.vertical)):
-        st.write(f"<b>Клас {school_class.class_name()}</b> — {school_class.student_count()} учнів",unsafe_allow_html=True)
+    classes = sorted(updated_school.get_classes, key=lambda cl: (cl.paralel, cl.vertical))
+
+    col1, col2 = st.columns(2)
+    #Розподіл класів між колонками
+    half = (len(classes) + 1) // 2
+    with col1:
+        for school_class in classes[:half]:
+            st.write(f"<p style='text-align: center;'><b>Клас {school_class.class_name()}</b> - {school_class.student_count()} учнів</p>", unsafe_allow_html=True)
+    with col2:
+        for school_class in classes[half:]:
+            st.write(f"<p style='text-align: center;'><b>Клас {school_class.class_name()}</b> - {school_class.student_count()} учнів</p>", unsafe_allow_html=True)
+
     #Оновлена статистика
     st.header("Оновлена статистична інформація школи", text_alignment="center", divider="gray")
     show_statistics(updated_school)
 
 
-#====================СЦЕНАРІЙ ДВА==========
-with open("salary.csv", "w", encoding="utf-8", newline="") as f:
-    info = csv.DictWriter(f, fieldnames=["Посада", "ПІБ", "Базова ставка", "Розрахована зарплата"])
-    info.writeheader()
+#====================СЦЕНАРІЙ 2==========
+with open("salary.csv", "w", encoding="utf-8", newline="") as f:  #відкриваємо файл salary.csv для запису даних
+    info = csv.DictWriter(f, fieldnames=["Посада", "ПІБ", "Базова ставка", "Розрахована зарплата"]) #створюємо об'єкт DictWriter для запису даних у csv файл у вигляді словників із заданими назвами стовпців
+    info.writeheader() #записуємо заголовки стовпців у перший рядок файлу
 
-    for worker in inf.load_school().get_workers:
-        if isinstance(worker, inf.Headmaster):
-            position = "Директор"
-        elif isinstance(worker, inf.Teacher):
-            position = "Вчитель"
+    for worker in inf.load_school().get_workers: #перебираємо всіх працівників школи
+        if isinstance(worker, inf.Headmaster): #перевіряємо, чи є поточний працівник об'єктом класу Headmaster
+            position = "Директор" #присвоюємо працівнику посаду директора
+        elif isinstance(worker, inf.Teacher): #якщо попередня умова не виконалася, перевіряємо, чи є працівник об'єктом класу Teacher
+            position = "Вчитель" #присвоюємо працівнику посаду вчителя
         else:
-            position = "Охоронець"
+            position = "Охоронець" #присвоюємо працівнику посаду охоронець
 
+        #записуємо інформацію про поточного працівника в окремий рядок csv файлу
         info.writerow({
             "Посада": position,
             "ПІБ": worker.full_name,
             "Базова ставка": worker.base_salary,
             "Розрахована зарплата": round(worker.calculate_salary(), 2)
         })
-
+        #виводимо в консоль повне ім'я працівника, його посаду та розраховану зарплату
         print(f'{worker.full_name} - {position} - {worker.calculate_salary():.2f} грн')
 
 

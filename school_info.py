@@ -67,88 +67,6 @@ class Class:
     def next_year(self):
             self.paralel += 1
 
-
-
-#створення класу School
-class School:
-    #конструктор класу School
-    def __init__(self, name: str):
-        self.name = name #ім'я школи
-        self.__classes = [] #список класів школи
-        self.__workers = [] #список працівників школи
-
-    #метод для отримання даних студента
-    @property
-    def get_classes(self):
-        return self.__classes
-
-    #метод для отримання даних про працівників
-    @property
-    def get_workers(self):
-        return self.__workers
-
-    #метод додавання класів до списку
-    def add_class(self, cl: Class):
-        self.__classes.append(cl)
-
-    #метод додавання працівників до школи
-    def add_worker(self, worker: Worker):
-        self.__workers.append(worker)
-
-    #метод отримання кількості студентів у класі
-    def get_number_of_students(self) -> int:
-        count = 0 #визначення змінної для підрахунку студентів у школі
-        for cl in self.__classes: #перебираємо всі класи в списку класів школи
-            count += cl.student_count() #додаємо кількість учнів поточного класу до загальної суми
-        return count #повертаємо загальну кількість учнів
-
-    def gender_statistics(self) -> tuple[float, float]:
-        boys = 0 #визначення змінної для підрахунку хлопців
-        girls = 0 #визначення змінної для підрахунку дівчат
-
-        for school_class in self.__classes: #перебираємо класи в школі
-            for student in school_class.get_students: #перебираємо студентів у класі
-                #перевіряємо стать учня + переводимо рядок у нижній регістр
-                if student.get_sex.lower() in ["ч", "хлопець", "чоловіча"]:
-                    boys += 1 #збільшуємо лічильник хлопців на 1
-                elif student.get_sex.lower() in ["ж", "дівчина", "жіноча"]:
-                    girls += 1 #збільшуємо лічильник дівчат на 1
-        
-        total = self.get_number_of_students() #підраховуємо загальну кількість хлопців та дівчат
-        if total > 0: #перевіряємл чи є учні в класах
-            boys_percentage = boys / total * 100 #обчислюємо відсоток хлопців у школі
-            girls_percentage = girls / total * 100 #обчислюємо відсоток дівчат у школі
-            
-            return (boys_percentage, girls_percentage) #повертаємо кортеж із відсотками
-        else:
-           return 0.0, 0.0 #повертаємо нульові значення, якщо учнів немає або дані відсутні
-
-    #метод, що повертає cередню кількість учнів у класі 
-    def student_average(self):
-        #ділимо загальну кількість учнів на кількість класів
-        return int(self.get_number_of_students() / (len(self.__classes))) #перетворюємо результат на ціле число та повертаємо його
-
-    #метод, що знаходить класи з найбільшою та найменшою кількістю учнів
-    def min_max_students(self) -> tuple [int, int]:
-        #знаходимо об'єкт класу з максимальним та мінімальним значенням учнів за допомогою анонімної функції,
-        #яка повертає кількість студентів у класі
-        max_class = max(self.__classes, key=lambda cl: cl.student_count())
-        min_class = min(self.__classes, key=lambda cl: cl.student_count())
-        
-        return (max_class, min_class) #повертає кортеж з максимальним на мінімальним значення
-
-    #метод для переведення класів
-    def next_year(self):
-            new_classes = [] #створюємо пустий список, який буде заповнюватися новими класами
-            for school_class in self.__classes: #перебираємо класи у списку класів
-                #11 клас випускається, тому пропускаємо його
-                if school_class.paralel == 11:
-                    continue
-                school_class.next_year() #застосовуємо метод, який додає 1 до значення паралелі
-                new_classes.append(school_class) #заповнюэмо список
-            self.__classes = new_classes #змінюємо список класів на новий 
-
-    
 class Worker:
     def __init__(
         self,
@@ -234,6 +152,88 @@ class Guard(Worker):
     def calculate_salary(self) -> int:
         return self.base_salary + self.__work_experience * 250
 
+#створення класу School
+class School:
+    #конструктор класу School
+    def __init__(self, name: str):
+        self.name = name #ім'я школи
+        self.__classes = [] #список класів школи
+        self.__workers = [] #список працівників школи
+
+    #метод для отримання даних студента
+    @property
+    def get_classes(self):
+        return self.__classes
+
+    #метод для отримання даних про працівників
+    @property
+    def get_workers(self):
+        return self.__workers
+
+    #метод додавання класів до списку
+    def add_class(self, cl: Class):
+        self.__classes.append(cl)
+
+    #метод додавання працівників до школи
+    def add_worker(self, worker: Worker):
+        self.__workers.append(worker)
+
+    #метод отримання кількості студентів у класі
+    def get_number_of_students(self) -> int:
+        count = 0 #визначення змінної для підрахунку студентів у школі
+        for cl in self.__classes: #перебираємо всі класи в списку класів школи
+            count += cl.student_count() #додаємо кількість учнів поточного класу до загальної суми
+        return count #повертаємо загальну кількість учнів
+
+    def gender_statistics(self) -> tuple[float, float]:
+        boys = 0 #визначення змінної для підрахунку хлопців
+        girls = 0 #визначення змінної для підрахунку дівчат
+
+        for school_class in self.__classes: #перебираємо класи в школі
+            for student in school_class.get_students: #перебираємо студентів у класі
+                #перевіряємо стать учня + переводимо рядок у нижній регістр
+                if student.get_sex.lower() in ["ч", "хлопець", "чоловіча"]:
+                    boys += 1 #збільшуємо лічильник хлопців на 1
+                elif student.get_sex.lower() in ["ж", "дівчина", "жіноча"]:
+                    girls += 1 #збільшуємо лічильник дівчат на 1
+        
+        total = self.get_number_of_students() #підраховуємо загальну кількість хлопців та дівчат
+        if total > 0: #перевіряємл чи є учні в класах
+            boys_percentage = boys / total * 100 #обчислюємо відсоток хлопців у школі
+            girls_percentage = girls / total * 100 #обчислюємо відсоток дівчат у школі
+            
+            return (boys_percentage, girls_percentage) #повертаємо кортеж із відсотками
+        else:
+           return 0.0, 0.0 #повертаємо нульові значення, якщо учнів немає або дані відсутні
+
+    #метод, що повертає cередню кількість учнів у класі 
+    def student_average(self):
+        #ділимо загальну кількість учнів на кількість класів
+        return int(self.get_number_of_students() / (len(self.__classes))) #перетворюємо результат на ціле число та повертаємо його
+
+    #метод, що знаходить класи з найбільшою та найменшою кількістю учнів
+    
+    def min_max_students(self) -> tuple [int, int]:
+        #знаходимо об'єкт класу з максимальним та мінімальним значенням учнів за допомогою анонімної функції,
+        #яка повертає кількість студентів у класі
+        max_class = max(self.__classes, key=lambda cl: cl.student_count())
+        min_class = min(self.__classes, key=lambda cl: cl.student_count())
+        
+        return (max_class, min_class) #повертає кортеж з максимальним на мініма
+    
+    #метод для переведення класів
+    def next_year(self):
+            new_classes = [] #створюємо пустий список, який буде заповнюватися новими класами
+            for school_class in self.__classes: #перебираємо класи у списку класів
+                #11 клас випускається, тому пропускаємо його
+                if school_class.paralel == 11:
+                    continue
+                school_class.next_year() #застосовуємо метод, який додає 1 до значення паралелі
+                new_classes.append(school_class) #заповнюэмо список
+            self.__classes = new_classes #змінюємо список класів на новий 
+
+
+
 #метод для завантаження інформації про школу та повертає об'єкт класу School
 def load_school() -> School:
     filenames = Path('classes').glob('*.csv') #знаходимо всі CSV-файли в папці classes та завантажуємо їх у список
@@ -252,14 +252,7 @@ def load_school() -> School:
                 #розпаковуємо дані поточного рядка CSV на окремі змінні для учня
                 name, surname, father_name, birth_year, sex, average_grade = row 
                 #створюємо екземпляр класу студент та передаємо йому змінні з рядка 
-                student = Student(
-                    name,
-                    surname,
-                    father_name,
-                    int(birth_year),
-                    sex,
-                    float(average_grade)
-                )
+                student = Student(name, surname, father_name, int(birth_year), sex, float(average_grade))
                 current_class.add_student(student) #додаємо створеного учня до списку учнів поточного класу
             #додаємо повністю сформований клас до школи
             school.add_class(current_class)
