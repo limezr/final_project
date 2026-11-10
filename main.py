@@ -31,8 +31,7 @@ def show_statistics(school):
 #завантажуємо дані школи з файлів та передаємо їх у функцію для відображення на сторінці
 show_statistics(inf.load_school())
 
-#=======================ПОБУДОВА ГРАФІКІВ=============
-
+#=======================ПОБУДОВА СТОВПЧИКОВИХ ГРАФІКІВ=============
 #функція для створення графіків
 def grafics(school):
     #створюємо словник для зберігання загальної кількості учнів по паралелях
@@ -71,7 +70,7 @@ def grafics(school):
     #створюємо порожній словник для зберігання середньої кількості учнів по кожній вертикалі
     average_vertical = {}
 
-    #Обчислення середньої кількості учнів у кожній вертикалі
+    #обчислення середньої кількості учнів у кожній вертикалі
     for vertical, counts in vertical_data.items(): 
         average_vertical[vertical] = sum(counts) / len(counts)
 
@@ -128,7 +127,7 @@ def grafics(school):
     classes = [] 
     avg_grades = []
 
-    #Обчислення середньої оцінки учнів кожного класу
+    #обчислення середньої оцінки учнів кожного класу
     for school_class in sorted_classes:
         cl_grades = [] #створюємо порожній список для зберігання середніх оцінок учнів поточного класу
         cl_name = school_class.class_name()
@@ -147,7 +146,7 @@ def grafics(school):
     ax.set_ylabel("Середня оцінка учня")
     ax.set_title("Залежність середньої оцінки від класів")
 
-    #Повертаємо підписи на 60 градусів, щоб класи на накладались один на один
+    #повертаємо підписи на 60 градусів, щоб класи на накладались один на один
     plt.xticks(rotation=60, ha="right")
 
     fig.tight_layout()
@@ -158,31 +157,39 @@ grafics(inf.load_school()) #викликаємо функцію grafics, пер�
 
 #=============ПЕРЕВЕДЕННЯ КЛАСІВ=================
 if st.button("Перевести всі класи на наступний рік"):
-    #Створення оновленої школи
+    #створення оновленої школи
     st.session_state.updated_school = inf.load_school()
-    #Переведення класів
+    #переведення класів
     st.session_state.updated_school.next_year()
 
-#Виведення статистики оновлених класів
+#виведення статистики оновлених класів
 if "updated_school" in st.session_state:
     st.header("Класи після переведення", text_alignment="center", divider = "grey")
     st.write("\n")
     updated_school = st.session_state.updated_school
 
+    #сортування класів за паралеллю та літерою класу
     classes = sorted(updated_school.get_classes, key=lambda cl: (cl.paralel, cl.vertical))
 
+    #створення двох колонок для відображення класів
     col1, col2 = st.columns(2)
-    #Розподіл класів між колонками
+
+    #розподіл класів між колонками
     half = (len(classes) + 1) // 2
+
+    #виведення першої половини класів у першій колонці
     with col1:
         for school_class in classes[:half]:
             st.write(f"<p style='text-align: center;'><b>Клас {school_class.class_name()}</b> - {school_class.student_count()} учнів</p>", unsafe_allow_html=True)
+    
+    #виведення другої половини класів у другій колонці
     with col2:
         for school_class in classes[half:]:
             st.write(f"<p style='text-align: center;'><b>Клас {school_class.class_name()}</b> - {school_class.student_count()} учнів</p>", unsafe_allow_html=True)
 
-    #Оновлена статистика
+    #оновлена статистика
     st.header("Оновлена статистична інформація школи", text_alignment="center", divider="gray")
+    #виклик функції відображення статистичної інформації оновленої школи
     show_statistics(updated_school)
 
 

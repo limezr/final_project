@@ -11,12 +11,12 @@ class Student: #створення класу Student
                  birth_year: int,
                  sex: str,
                  average_grade: float):
-        self.__name = name #ім'я конкретного студента
-        self.__surname = surname #прізвище конкретного студента
-        self.__father_name = father_name #по батькові конкретного студента
-        self.__birth_year = birth_year #рік народження конкретного студента
-        self.__sex = sex #стать конкретного студента
-        self.__average_grade = average_grade #середній бал конкретного студента
+        self.__name = name 
+        self.__surname = surname
+        self.__father_name = father_name
+        self.__birth_year = birth_year 
+        self.__sex = sex 
+        self.__average_grade = average_grade 
 
     #методи для отримання даних студента
     @property
@@ -42,9 +42,9 @@ class Student: #створення класу Student
 #створення класу Class
 class Class:
     def __init__(self, paralel: int, vertical:str): #конструктор класу Class
-        self.paralel = paralel #паралель конкретного класу
-        self.vertical = vertical #вертикаль конкретного класу
-        self.__students = [] #пустий список студентів конкретного класу, який буде заповнюватися пізніше
+        self.paralel = paralel 
+        self.vertical = vertical 
+        self.__students = [] 
 
     #метод для отримання даних студента
     @property
@@ -63,11 +63,13 @@ class Class:
     def class_name(self) -> str:
         return f"{self.paralel}-{self.vertical}"
     
-    #метод переведення класу на наступний навчальний рік (збільшує паралель на 1)
+    #метод переведення класу на наступний навчальний рік, збільшує паралель на 1
     def next_year(self):
             self.paralel += 1
 
+#створення батьківського класу Worker
 class Worker:
+    #конструктор класу Worker
     def __init__(
         self,
         surname: str,
@@ -80,77 +82,91 @@ class Worker:
         self.__father_name = father_name
         self.base_salary = base_salary
 
+    #повернення повного імені працівника
     @property
     def full_name(self) -> str:
         return f"{self.__surname} {self.__first_name} {self.__father_name}"
-
-
+    
+#створення дочірнього класу Headmaster
 class Headmaster(Worker):
-    def __init__(
-        self,
-        surname: str,
-        first_name: str,
-        father_name: str,
-        base_salary: float,
-        teaching_experience: int,
-        management_experience: int
-    ):
-        super().__init__(
-            surname,
-            first_name,
-            father_name,
-            base_salary
-        )
-        self.__teaching_experience = teaching_experience
-        self.__management_experience = management_experience
+        #конструктор дочірнього класу
+        def __init__(
+            self,
+            surname: str,
+            first_name: str,
+            father_name: str,
+            base_salary: float,
+            teaching_experience: int,
+            management_experience: int
+        ):
+            #виклик конструктора батьківського класу Worker
+            super().__init__(
+                surname,
+                first_name,
+                father_name,
+                base_salary
+            )
+            #ініціалізація приватних атрибутів дочірнього класу
+            self.__teaching_experience = teaching_experience
+            self.__management_experience = management_experience
 
-    def calculate_salary(self) -> float:
-        return (
-            self.base_salary * self.__teaching_experience / 50
-            + self.__management_experience * 500
-        )
-
-
+        #метод розрахунку заробітної плати директора
+        def calculate_salary(self) -> float:
+            return (
+                self.base_salary * self.__teaching_experience / 50
+                + self.__management_experience * 500
+            )
+    
+#створення дочірнього класу Teacher
 class Teacher(Worker):
-    def __init__(
-        self,
-        surname: str,
-        first_name: str,
-        father_name: str,
-        base_salary: float,
-        teaching_experience: int
-    ):
-        super().__init__(
-            surname,
-            first_name,
-            father_name,
-            base_salary
-        )
-        self.__teaching_experience = teaching_experience
+        #конструктор дочірнього класу
+        def __init__(
+            self,
+            surname: str,
+            first_name: str,
+            father_name: str,
+            base_salary: float,
+            teaching_experience: int
+        ):
+            #виклик конструктора батьківського класу Worker
+            super().__init__(
+                surname,
+                first_name,
+                father_name,
+                base_salary
+            )
+            #ініціалізація приватних атрибутів дочірнього класу
+            self.__teaching_experience = teaching_experience
 
-    def calculate_salary(self) -> float:
-        return self.base_salary * self.__teaching_experience / 30
-
-
+        #метод розрахунку заробітної плати вчителя
+        def calculate_salary(self) -> float:
+            return self.base_salary * self.__teaching_experience / 30
+    
+#створення дочірнього класу Guard
 class Guard(Worker):
+    #конструктор дочірнього класу
     def __init__(
         self,
         surname: str,
-        first_name: str,
+         first_name: str,
         father_name: str,
         base_salary: float,
         work_experience: int
-    ):
+        ):
+        #виклик конструктора батьківського класу Worker
         super().__init__(
             surname,
             first_name,
             father_name,
             base_salary
         )
+        #ініціалізація приватних атрибутів дочірнього класу
         self.__work_experience = work_experience
 
+    #метод розрахунку заробітної плати вчителя
     def calculate_salary(self) -> int:
         return self.base_salary + self.__work_experience * 250
+
 
 #створення класу School
 class School:
@@ -212,7 +228,6 @@ class School:
         return int(self.get_number_of_students() / (len(self.__classes))) #перетворюємо результат на ціле число та повертаємо його
 
     #метод, що знаходить класи з найбільшою та найменшою кількістю учнів
-    
     def min_max_students(self) -> tuple [int, int]:
         #знаходимо об'єкт класу з максимальним та мінімальним значенням учнів за допомогою анонімної функції,
         #яка повертає кількість студентів у класі
@@ -246,7 +261,7 @@ def load_school() -> School:
 
         with open(file, 'r', encoding='utf-8', newline ='') as f: #відкриваємо файл для читання даних учнів
             reader = csv.reader(f, delimiter=';') #створюємо зчитувач CSV із розділювачем у вигляді крапки з комою
-            next(reader) #Пропускаємо заголовок таблиці
+            next(reader) #пропускаємо заголовок таблиці
 
             for row in reader: #перебиhаємо рядки в зчитувачі
                 #розпаковуємо дані поточного рядка CSV на окремі змінні для учня
