@@ -1,6 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-import first_scenario as scen
+import school_info as inf
+import csv
 
 #====================ВІДОБРАЖЕННЯ ОСНОВНОЇ ІНФОРМАЦІЇ ПРО ШКОЛУ====================
 #створюємо головний заголовок сторінки з сірою лінією-розділювачем
@@ -28,7 +29,7 @@ def show_statistics(school):
     st.write(f'<b>Мімнімальна кількість студентів:</b> {minimum.student_count()} у класі {minimum.class_name()}', unsafe_allow_html=True)
 
 #завантажуємо дані школи з файлів та передаємо їх у функцію для відображення на сторінці
-show_statistics(scen.load_school())
+show_statistics(inf.load_school())
 
 #=======================ПОБУДОВА ГРАФІКІВ=============
 
@@ -95,21 +96,21 @@ def grafics(school):
             else:
                 birth_data[year] = 1
 
-    if birth_data:
-        years = sorted(birth_data.keys())
-        counts = [birth_data[year] for year in years]
+    # if birth_data:
+    years = sorted(birth_data.keys())
+    counts = [birth_data[year] for year in years]
 
-        fig, ax = plt.subplots()
-        ax.set_facecolor('lightblue')
-        ax.patch.set_alpha(0.2)
-        ax.plot(years, counts, c = "#1d3557", marker="o")
-        ax.set_xlabel("Рік народження", c = "#1d3557")
-        ax.set_ylabel("Кількість учнів", c = "#1d3557")
-        ax.set_title("Кількість учнів за роком народження", c = "#1d3557")
+    fig, ax = plt.subplots()
+    ax.set_facecolor('lightblue')
+    ax.patch.set_alpha(0.2)
+    ax.plot(years, counts, c = "#1d3557", marker="o")
+    ax.set_xlabel("Рік народження", c = "#1d3557")
+    ax.set_ylabel("Кількість учнів", c = "#1d3557")
+    ax.set_title("Кількість учнів за роком народження", c = "#1d3557")
 
-        plt.xticks(years)
-        st.pyplot(fig)
-        plt.close(fig)
+    plt.xticks(years)
+    st.pyplot(fig)
+    plt.close(fig)
 
 
     sorted_classes = sorted(school.get_classes, key=lambda cl: (cl.paralel, cl.vertical))
@@ -125,29 +126,29 @@ def grafics(school):
         avg_grades.append(avrg_grade_per_class)
         classes.append(cl_name)
 
-    if classes:
-        fig, ax = plt.subplots() 
-        ax.set_facecolor('lightblue')
-        ax.patch.set_alpha(0.2)
-        ax.scatter(classes, avg_grades, c="#1d3557", alpha = 0.8)
-        ax.set_xlabel("Класи")
-        ax.set_ylabel("Середня оцінка учня")
-        ax.set_title("Залежність середньої оцінки від класів")
+    # if classes:
+    fig, ax = plt.subplots() 
+    ax.set_facecolor('lightblue')
+    ax.patch.set_alpha(0.2)
+    ax.scatter(classes, avg_grades, c="#1d3557", alpha = 0.8)
+    ax.set_xlabel("Класи")
+    ax.set_ylabel("Середня оцінка учня")
+    ax.set_title("Залежність середньої оцінки від класів")
 
          # Повертаємо підписи на 60 градусів, щоб вони не накладалися
-        plt.xticks(rotation=60, ha="right")
+    plt.xticks(rotation=60, ha="right")
 
     fig.tight_layout()
     st.pyplot(fig)
     plt.close(fig)
                        
-grafics(scen.load_school())
+grafics(inf.load_school())
 
 
 #=============ПЕРЕВЕДЕННЯ КЛАСІВ=================
 if st.button("Перевести всі класи на наступний рік"):
     #Створення оновленої школи
-    st.session_state.updated_school = scen.load_school()
+    st.session_state.updated_school = inf.load_school()
     #Переведення класів
     st.session_state.updated_school.next_year()
 
@@ -170,10 +171,10 @@ with open("salary.csv", "w", encoding="utf-8", newline="") as f:
     info = csv.DictWriter(f, fieldnames=["Посада", "ПІБ", "Базова ставка", "Розрахована зарплата"])
     info.writeheader()
 
-    for worker in scen.load_school().get_workers:
-        if isinstance(worker, scen.Headmaster):
+    for worker in inf.load_school().get_workers:
+        if isinstance(worker, inf.Headmaster):
             position = "Директор"
-        elif isinstance(worker, scen.Teacher):
+        elif isinstance(worker, inf.Teacher):
             position = "Вчитель"
         else:
             position = "Охоронець"
