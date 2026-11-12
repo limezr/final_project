@@ -172,9 +172,9 @@ class Guard(Worker):
 class School:
     #конструктор класу School
     def __init__(self, name: str):
-        self.name = name #ім'я школи
-        self.__classes = [] #список класів школи
-        self.__workers = [] #список працівників школи
+        self.name = name 
+        self.__classes = [] 
+        self.__workers = [] 
 
     #метод для отримання даних студента
     @property
